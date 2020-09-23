@@ -1,0 +1,49 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:syscol="clr-namespace:System.Collections;assembly=mscorlib"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" Name="theWindow"
+             x:Class="ipocs.dpt.Views.PropertyEditor">
+  <ListBox Items="{Binding ItemProperties}">
+    <ListBox.ItemTemplate>
+      <DataTemplate>
+        <Grid ColumnDefinitions="200,*">
+          <TextBlock Grid.Column="0" Text="{Binding Name}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,5,5,5" />
+          <ContentControl Grid.Column="1" Content="{Binding Path=Value}">
+            <ContentControl.DataTemplates>
+              <DataTemplate DataType="x:Int32">
+                <NumericUpDown Value="{Binding $parent[2].DataContext.Value,Mode=TwoWay}" Minimum="0" />
+              </DataTemplate>
+              <DataTemplate DataType="x:Byte">
+                <NumericUpDown Value="{Binding $parent[2].DataContext.Value,Mode=TwoWay}" Minimum="0" />
+              </DataTemplate>
+              <DataTemplate DataType="x:Boolean">
+                <CheckBox IsChecked="{Binding $parent[2].DataContext.Value,Mode=TwoWay}" />
+              </DataTemplate>
+              <DataTemplate DataType="x:String">
+                <TextBox Text="{Binding $parent[2].DataContext.Value,Mode=TwoWay}" />
+              </DataTemplate>
+              <DataTemplate DataType="syscol:IList">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                  <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Collection with " />
+                    <TextBlock Text="{Binding Count}" />
+                    <TextBlock Text=" items" />
+                  </StackPanel>
+                  <Button Grid.Column="2" Command="{Binding OnClickCommand,ElementName=theWindow}" CommandParameter="{Binding .}">
+                    <TextBlock Text="..." />
+                  </Button>
+                </Grid>
+              </DataTemplate>
+              <DataTemplate>
+                <TextBlock Text="Unknown type" />
+              </DataTemplate>
+            </ContentControl.DataTemplates>
+        </ContentControl>
+        </Grid>
+      </DataTemplate>
+    </ListBox.ItemTemplate>
+  </ListBox>
+</UserControl>

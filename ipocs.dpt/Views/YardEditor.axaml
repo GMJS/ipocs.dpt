@@ -1,0 +1,35 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ipocs.dpt.ViewModels;assembly=ipocs.dpt"
+             xmlns:v="clr-namespace:ipocs.dpt.Views"
+             mc:Ignorable="d" d:DesignWidth="950" d:DesignHeight="450"
+             x:Class="ipocs.dpt.Views.YardEditor">
+  <Design.DataContext>
+    <vm:YardEditorViewModel />
+  </Design.DataContext>
+  <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,*">
+    <Menu Grid.Row="0">
+      <Button Background="White" BorderThickness="0" Click="OnLoadButtonClicked">
+        <DrawingPresenter Width="16" Height="16" Drawing="{DynamicResource MaterialDesign.Input}" />
+      </Button>
+      <Button Background="White" BorderThickness="0" Click="OnSaveButtonClicked">
+        <DrawingPresenter Width="16" Height="16" Drawing="{DynamicResource MaterialDesign.Save}" />
+      </Button>
+      <Button Background="White" BorderThickness="0" Command="{Binding NewUnit}">
+        <DrawingPresenter Width="16" Height="16" Drawing="{DynamicResource MaterialDesign.Add}" />
+      </Button>
+    </Menu>
+    <ListBox Grid.Row="1" Name="ConcentratorList" BorderThickness="0" Items="{Binding Concentrators}">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <Border BorderBrush="Black" BorderThickness="1" CornerRadius="4" Padding="4">
+            <TextBlock Text="{Binding Name}"/>
+          </Border>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+    <v:ConcentratorEditor Grid.Column="1" Grid.RowSpan="2" DataContext="{Binding #ConcentratorList.SelectedItem}" />
+  </Grid>
+</UserControl>

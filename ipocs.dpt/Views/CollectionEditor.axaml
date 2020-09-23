@@ -1,0 +1,50 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:v="clr-namespace:ipocs.dpt.Views"
+             xmlns:objects="clr-namespace:ipocs.objects.Objects;assembly=ipocs.objects"
+             xmlns:local="clr-namespace:ipocs.dpt"
+             Name="theWindow"
+             mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="450"
+             x:Class="ipocs.dpt.Views.CollectionEditor">
+  <Grid ColumnDefinitions="300,*">
+    <Grid RowDefinitions="32,*">
+      <Menu>
+        <Button Background="White" BorderThickness="0" Click="OnAddButtonClicked">
+          <Button.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="Test" />
+            </ContextMenu>
+          </Button.ContextMenu>
+          <DrawingPresenter Width="16" Height="16" Drawing="{DynamicResource MaterialDesign.Add}" />
+        </Button>
+      </Menu>
+      <ListBox Grid.Row="1" Items="{Binding .,Mode=TwoWay}" Name="ItemsList" BorderThickness="0">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Border BorderBrush="Black" BorderThickness="1" CornerRadius="4" Padding="4">
+              <Grid ColumnDefinitions="*,Auto">
+                <Grid.ContextMenu>
+                  <ContextMenu>
+                    <MenuItem Header="sss" />
+                  </ContextMenu>
+                </Grid.ContextMenu>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="{Binding TypeName}" Width="100" />
+                  <TextBlock Text="{Binding Name}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                  <Button Background="White" BorderThickness="0">
+                    <DrawingPresenter Width="8" Height="8" Drawing="{DynamicResource MaterialDesign.Delete}" />
+                  </Button>
+                </StackPanel>
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Grid>
+    <v:PropertyEditor Margin="5,5,5,5" Grid.Column="1" Item="{Binding Path=SelectedItem,ElementName=ItemsList}" />
+  </Grid>
+</UserControl>

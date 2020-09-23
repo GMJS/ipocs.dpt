@@ -1,0 +1,46 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+    tags:
+      - '*'
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Install tool
+      run: | 
+        mv NuGet.config NuGet.config.disabled
+        dotnet tool install gpr -g
+        mv NuGet.config.disabled NuGet.config
+    - name: Authenticate GitHub Packages
+      run: gpr setApiKey '${{ secrets.GITHUB_TOKEN }}' github_ipocsmr
+    - name: Install dependencies
+      run: |
+        cd ipocs.dpt
+        dotnet restore
+    - name: Build
+      run: |
+        cd ipocs.dpt
+        dotnet build --configuration Release --no-restore
+    - name: Test
+      run: |
+        cd ipocs.dpt
+        dotnet test --no-restore --verbosity normal
+    - name: Package Release
+      run: |
+        cd ipocs.dpt
+        dotnet pack -c Release -o out

@@ -1,0 +1,26 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:ipocs.dpt.ViewModels;assembly=ipocs.dpt"
+        xmlns:v="clr-namespace:ipocs.dpt.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="910" d:DesignHeight="500"
+        Width="950" Height="500"
+        x:Class="ipocs.dpt.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="ipocs.dpt">
+
+  <Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
+
+  <TabControl>
+    <TabItem Header="Yard Editor">
+      <v:YardEditor DataContext="{Binding YardEditorViewModel}" />
+    </TabItem>
+    <TabItem Header="Yard Control">
+      <v:UnitControl/>
+    </TabItem>
+  </TabControl>
+
+</Window>

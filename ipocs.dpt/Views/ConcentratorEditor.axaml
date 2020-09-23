@@ -1,0 +1,21 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:v="clr-namespace:ipocs.dpt.Views"
+             xmlns:objects="clr-namespace:ipocs.objects.Objects;assembly=ipocs.objects"
+             xmlns:local="clr-namespace:ipocs.dpt"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ipocs.dpt.Views.ConcentratorEditor">
+  <Grid ColumnDefinitions="250,*" RowDefinitions="Auto,Auto,*" >
+    <StackPanel Margin="5,5,5,5" Grid.Row="0" Grid.ColumnSpan="3" Orientation="Horizontal">
+      <TextBlock Text="Concentrator editor for " FontSize="24" />
+      <TextBlock Text="{Binding Name}" FontSize="24" />
+    </StackPanel>
+    <StackPanel Margin="5,5,5,5" Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal">
+      <TextBlock Margin="0,0,5,0" Text="Name:" />
+      <TextBox Text="{Binding Name,Mode=TwoWay}" Width="200" />
+    </StackPanel>
+    <v:CollectionEditor Margin="5,5,5,5" Grid.Row="2" Grid.ColumnSpan="2" DataContext="{Binding Objects}" />
+  </Grid>
+</UserControl>
