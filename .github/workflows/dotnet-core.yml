@@ -10,9 +10,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
       with:
@@ -40,7 +38,101 @@ jobs:
       run: |
         cd ipocs.dpt
         dotnet test --no-restore --verbosity normal
-    - name: Package Release
+
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        draft: true
+        prerelease: false
+
+  package-windows:
+    needs: build
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Install tool
+      run: | 
+        mv NuGet.config NuGet.config.disabled
+        dotnet tool install gpr -g
+        mv NuGet.config.disabled NuGet.config
+    - name: Authenticate GitHub Packages
+      run: gpr setApiKey '${{ secrets.GITHUB_TOKEN }}' github_ipocsmr
+    - name: Install dependencies
       run: |
         cd ipocs.dpt
-        dotnet pack -c Release -o out
+        dotnet restore
+    - name: Publish
+      run: |
+        cd ipocs.dpt
+        dotnet publish -r win-x64 -c Release ipocs.dpt.csproj
+    - name: Create package
+      run: |
+        cd ipocs.dpt/bin/Release/netcoreapp3.1/win-x64/publish
+        tar -cvzf ../../../../../../ipocs.dpt.win-x64.tgz .
+        cd -
+        dir
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ipocs.dpt.win-x64
+        path: ipocs.dpt.win-x64.tgz
+
+  package-linux:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Install tool
+      run: | 
+        mv NuGet.config NuGet.config.disabled
+        dotnet tool install gpr -g
+        mv NuGet.config.disabled NuGet.config
+    - name: Authenticate GitHub Packages
+      run: gpr setApiKey '${{ secrets.GITHUB_TOKEN }}' github_ipocsmr
+    - name: Install dependencies
+      run: |
+        cd ipocs.dpt
+        dotnet restore
+    - name: Publish
+      run: |
+        cd ipocs.dpt
+        dotnet publish -r linux-x64 -c Release ipocs.dpt.csproj
+        dotnet publish -r linux-arm -c Release ipocs.dpt.csproj
+    - name: Create package
+      run: |
+        cd ipocs.dpt/bin/Release/netcoreapp3.1/linux-x64/publish
+        tar -cvzf ../../../../../../ipocs.dpt.linux-x64.tgz .
+        cd -
+        cd ipocs.dpt/bin/Release/netcoreapp3.1/linux-arm/publish
+        tar -cvzf ../../../../../../ipocs.dpt.linux-arm.tgz .
+        cd -
+        ls -ln
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ipocs.dpt.linux-x64
+        path: ipocs.dpt.linux-x64.tgz
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ipocs.dpt.linux-arm
+        path: ipocs.dpt.linux-arm.tgz
