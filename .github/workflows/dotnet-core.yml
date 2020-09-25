@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
       with:
@@ -38,96 +38,28 @@ jobs:
       run: |
         cd ipocs.dpt
         dotnet test --no-restore --verbosity normal
-
-  create-release:
-    needs: build
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
-        draft: true
-        prerelease: false
-
-  package-windows:
-    needs: build
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.301
-    - name: Install tool
-      run: | 
-        mv NuGet.config NuGet.config.disabled
-        dotnet tool install gpr -g
-        mv NuGet.config.disabled NuGet.config
-    - name: Authenticate GitHub Packages
-      run: gpr setApiKey '${{ secrets.GITHUB_TOKEN }}' github_ipocsmr
-    - name: Install dependencies
-      run: |
-        cd ipocs.dpt
-        dotnet restore
-    - name: Publish
+    - name: Publish - Windows x64
       run: |
         cd ipocs.dpt
         dotnet publish -r win-x64 -c Release ipocs.dpt.csproj
-    - name: Create package
+        cd bin/Release/netcoreapp3.1/win-x64/publish/
+        Compress-Archive -Path ipocs.dpt.exe -DestinationPath ipocs.dpt.zip
+    - name: Publish - Linux x64
       run: |
-        cd ipocs.dpt/bin/Release/netcoreapp3.1/win-x64/publish
-        tar -cvzf ../../../../../../ipocs.dpt.win-x64.tgz .
-        cd -
-        dir
+        cd ipocs.dpt
+        dotnet publish -r linux-x64 -c Release ipocs.dpt.csproj
+        cd bin/Release/netcoreapp3.1/linux-x64/publish/
+        Compress-Archive -Path ipocs.dpt -DestinationPath ipocs.dpt.zip
+    - name: Publish - Linux arm
+      run: |
+        cd ipocs.dpt
+        dotnet publish -r linux-arm -c Release ipocs.dpt.csproj
+        cd bin/Release/netcoreapp3.1/linux-arm/publish/
+        Compress-Archive -Path ipocs.dpt -DestinationPath ipocs.dpt.zip
     - uses: actions/upload-artifact@v2
       with:
         name: ipocs.dpt.win-x64
         path: ipocs.dpt/bin/Release/netcoreapp3.1/win-x64/publish/ipocs.dpt.exe
-
-  package-linux:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.301
-    - name: Install tool
-      run: | 
-        mv NuGet.config NuGet.config.disabled
-        dotnet tool install gpr -g
-        mv NuGet.config.disabled NuGet.config
-    - name: Authenticate GitHub Packages
-      run: gpr setApiKey '${{ secrets.GITHUB_TOKEN }}' github_ipocsmr
-    - name: Install dependencies
-      run: |
-        cd ipocs.dpt
-        dotnet restore
-    - name: Publish
-      run: |
-        cd ipocs.dpt
-        dotnet publish -r linux-x64 -c Release ipocs.dpt.csproj
-        dotnet publish -r linux-arm -c Release ipocs.dpt.csproj
-    - name: Create package
-      run: |
-        cd ipocs.dpt/bin/Release/netcoreapp3.1/linux-x64/publish
-        tar -cvzf ../../../../../../ipocs.dpt.linux-x64.tgz .
-        cd -
-        cd ipocs.dpt/bin/Release/netcoreapp3.1/linux-arm/publish
-        tar -cvzf ../../../../../../ipocs.dpt.linux-arm.tgz .
-        cd -
-        ls -ln
     - uses: actions/upload-artifact@v2
       with:
         name: ipocs.dpt.linux-x64
@@ -136,3 +68,44 @@ jobs:
       with:
         name: ipocs.dpt.linux-arm
         path: ipocs.dpt/bin/Release/netcoreapp3.1/linux-arm/publish/ipocs.dpt
+    - name: Create Release
+      id: create_release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        draft: true
+        prerelease: false
+    - name: Upload Release Asset - Windows x64
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./ipocs.dpt/bin/Release/netcoreapp3.1/win-x64/publish/ipocs.dpt.zip
+        asset_name: ipocs.dpt.win-x64.zip
+        asset_content_type: application/octet-stream
+    - name: Upload Release Asset - Linux x64
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./ipocs.dpt/bin/Release/netcoreapp3.1/linux-x64/publish/ipocs.dpt.zip
+        asset_name: ipocs.dpt.linux-x64.zip
+        asset_content_type: application/octet-stream
+    - name: Upload Release Asset - Linux arm
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./ipocs.dpt/bin/Release/netcoreapp3.1/linux-arm/publish/ipocs.dpt.zip
+        asset_name: ipocs.dpt.linux-arm.zip
+        asset_content_type: application/octet-stream
