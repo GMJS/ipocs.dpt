@@ -33,7 +33,7 @@ jobs:
     - name: Build
       run: |
         cd ipocs.dpt
-        dotnet build --configuration Release --no-restore
+        dotnet build --configuration Release --no-restore -r linux-x64
     - name: Test
       run: |
         cd ipocs.dpt
@@ -90,7 +90,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: ipocs.dpt.win-x64
-        path: ipocs.dpt.win-x64.tgz
+        path: ipocs.dpt/bin/Release/netcoreapp3.1/win-x64/publish/ipocs.dpt.exe
 
   package-linux:
     needs: build
@@ -131,8 +131,8 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: ipocs.dpt.linux-x64
-        path: ipocs.dpt.linux-x64.tgz
+        path:  ipocs.dpt/bin/Release/netcoreapp3.1/linux-x64/publish/ipocs.dpt
     - uses: actions/upload-artifact@v2
       with:
         name: ipocs.dpt.linux-arm
-        path: ipocs.dpt.linux-arm.tgz
+        path: ipocs.dpt/bin/Release/netcoreapp3.1/linux-arm/publish/ipocs.dpt
