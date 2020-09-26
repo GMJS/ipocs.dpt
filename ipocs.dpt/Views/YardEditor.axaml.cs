@@ -48,23 +48,23 @@ namespace ipocs.dpt.Views
           types.AddRange(types2);
           types.Add(typeof(objects.Objects.BasicObject));
           XmlSerializer xsSubmit = new XmlSerializer(typeof(List<objects.Concentrator>), types.ToArray());
-          using (var reader = XmlReader.Create(file))
+          using var reader = XmlReader.Create(file);
+          var objs = xsSubmit.Deserialize(reader) as List<objects.Concentrator>;
+          Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
           {
-            var objs = xsSubmit.Deserialize(reader) as List<objects.Concentrator>;
-            Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-            {
-              (DataContext as YardEditorViewModel).Concentrators.Clear();
-              (DataContext as YardEditorViewModel).Concentrators.AddRange(objs);
-            });
-          }
+            (DataContext as YardEditorViewModel).Concentrators.Clear();
+            (DataContext as YardEditorViewModel).Concentrators.AddRange(objs);
+          });
         }
       });
     }
 
     public void OnSaveButtonClicked(object sender, RoutedEventArgs args)
     {
-      var sfd = new SaveFileDialog();
-      sfd.DefaultExtension = "*.xml";
+      var sfd = new SaveFileDialog
+      {
+        DefaultExtension = "*.xml"
+      };
       IControl window = this;
       while (window != null && !(window is Window))
       {
@@ -90,15 +90,13 @@ namespace ipocs.dpt.Views
         types.AddRange(types2);
         types.Add(typeof(objects.Objects.BasicObject));
         XmlSerializer xsSubmit = new XmlSerializer(typeof(List<objects.Concentrator>), types.ToArray());
-        using (XmlWriter writer = XmlWriter.Create(saveFileName, new XmlWriterSettings
+        using XmlWriter writer = XmlWriter.Create(saveFileName, new XmlWriterSettings
         {
           Indent = true,
           IndentChars = "  "
-        }))
-        {
-          var concentrators = await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => (DataContext as YardEditorViewModel).Concentrators.ToList());
-          xsSubmit.Serialize(writer, concentrators);
-        }
+        });
+        var concentrators = await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => (DataContext as YardEditorViewModel).Concentrators.ToList());
+        xsSubmit.Serialize(writer, concentrators);
       });
     }
   }
