@@ -7,8 +7,8 @@
         mc:Ignorable="d" d:DesignWidth="910" d:DesignHeight="500"
         Width="950" Height="500"
         x:Class="ipocs.dpt.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="ipocs.dpt">
+        Icon="/Assets/ipocsmr2.png"
+        Title="IPOCS Data Preparation Tool">
 
   <Design.DataContext>
     <vm:MainWindowViewModel/>
