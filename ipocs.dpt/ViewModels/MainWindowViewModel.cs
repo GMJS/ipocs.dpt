@@ -6,8 +6,13 @@ namespace ipocs.dpt.ViewModels
 {
   public class MainWindowViewModel : ViewModelBase
   {
-    public string Greeting => "Welcome to Avalonia!";
+    public YardEditorViewModel YardEditorViewModel { get; }
 
-    public YardEditorViewModel YardEditorViewModel {get;} = new YardEditorViewModel();
+    public UnitControlViewModel UnitControlViewModel { get; }
+
+    public MainWindowViewModel() {
+      YardEditorViewModel = new YardEditorViewModel();
+      UnitControlViewModel = new UnitControlViewModel(this);
+    }
   }
 }

@@ -41,7 +41,18 @@ namespace ipocs.dpt.Views
         }
         set
         {
-          pi.SetMethod?.Invoke(source, new[] { Convert.ChangeType(value, pi.PropertyType) });
+          try
+          {
+            pi.SetMethod?.Invoke(source, new[] { Convert.ChangeType(value, pi.PropertyType) });
+          } catch { }
+        }
+      }
+
+      public Array Values
+      {
+        get
+        {
+          return Enum.GetValues(pi.PropertyType);
         }
       }
     }

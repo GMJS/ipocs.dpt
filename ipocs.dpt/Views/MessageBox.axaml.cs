@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 
-namespace ipocs.dpt
+namespace ipocs.dpt.Views
 {
   class MessageBox : Window
   {

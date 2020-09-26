@@ -2,7 +2,30 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:v="clr-namespace:ipocs.dpt.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ipocs.dpt.Views.UnitControl">
-    Control units
+  <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,*,100">
+    <Menu Grid.Row="0">
+      <ToggleSwitch Background="White" BorderThickness="0" Width="72" Click="ToggleListenButtonClicked" IsChecked="{Binding Listening}">
+        <ToggleSwitch.OnContent>
+          <DrawingPresenter Width="16" Height="16" Drawing="{DynamicResource MaterialDesign.NetworkCell}" />
+        </ToggleSwitch.OnContent>
+        <ToggleSwitch.OffContent>
+          <DrawingPresenter Width="16" Height="16" Drawing="{DynamicResource MaterialDesign.NetworkLocked}" />
+        </ToggleSwitch.OffContent>
+      </ToggleSwitch>
+    </Menu>
+    <ListBox Grid.Row="1" Name="ClientList" BorderThickness="0" Items="{Binding Clients}">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <Border BorderBrush="Black" BorderThickness="1" CornerRadius="4" Padding="4">
+            <TextBlock Text="{Binding Client.Name}"/>
+          </Border>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+    <v:UnitController Grid.Column="1" Grid.RowSpan="2" DataContext="{Binding #ClientList.SelectedItem}" />
+    <ListBox Grid.Row="2" Grid.ColumnSpan="2" Items="{Binding Log}"></ListBox>
+  </Grid>
 </UserControl>

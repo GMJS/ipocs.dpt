@@ -19,7 +19,7 @@
       <v:YardEditor DataContext="{Binding YardEditorViewModel}" />
     </TabItem>
     <TabItem Header="Yard Control">
-      <v:UnitControl/>
+      <v:UnitControl DataContext="{Binding UnitControlViewModel}" />
     </TabItem>
   </TabControl>
 
