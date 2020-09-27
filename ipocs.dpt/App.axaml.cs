@@ -1,12 +1,16 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Avalonia.Threading;
 using ipocs.dpt.ViewModels;
 using ipocs.dpt.Views;
+#if !DEBUG
+using Avalonia.Threading;
 using Onova;
+using Onova.Models;
 using Onova.Services;
+using System.Reflection;
 using System.Runtime.InteropServices;
+#endif
 
 namespace ipocs.dpt
 {
@@ -43,6 +47,9 @@ namespace ipocs.dpt
 
         // Configure to look for packages in specified directory and treat them as zips
         manager = new UpdateManager(
+            AssemblyMetadata.FromAssembly(
+		          Assembly.GetEntryAssembly(), 
+		          System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName),
             new GithubPackageResolver("ipocsmr", "ipocs.dpt", "*" + os + "*"),
             new ZipPackageExtractor());
         // Check for new version and, if available, perform full update and restart
