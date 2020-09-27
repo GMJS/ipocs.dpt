@@ -44,5 +44,11 @@ namespace ipocs.dpt.Views
       (sender as Button).ContextMenu.Items = items;
       (sender as Button).ContextMenu.Open();
     }
+
+    public void OnDeleteMenuItemClicked(object sender, RoutedEventArgs args)
+    {
+      var list = this.FindControl<ListBox>("ItemsList").DataContext as IList;
+      list.Remove((sender as MenuItem).DataContext);
+    }
   }
 }

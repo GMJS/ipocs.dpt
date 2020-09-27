@@ -27,7 +27,7 @@
               <Grid ColumnDefinitions="*,Auto">
                 <Grid.ContextMenu>
                   <ContextMenu>
-                    <MenuItem Header="sss" />
+                    <MenuItem Header="Delete" Click="OnDeleteMenuItemClicked"  />
                   </ContextMenu>
                 </Grid.ContextMenu>
                 <StackPanel Orientation="Horizontal">

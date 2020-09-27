@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using ipocs.dpt.ViewModels;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,13 @@ namespace ipocs.dpt.Views
     private void InitializeComponent()
     {
       AvaloniaXamlLoader.Load(this);
+    }
+
+    public void OnDeleteMenuItemClicked(object sender, RoutedEventArgs args)
+    {
+      var cList = this.FindControl<ListBox>("ConcentratorList");
+      var list = (cList.DataContext as YardEditorViewModel).Concentrators as IList;
+      list.Remove((sender as MenuItem).DataContext);
     }
 
     public void OnLoadButtonClicked(object sender, RoutedEventArgs args)
