@@ -46,7 +46,7 @@
                     <TextBlock Text=" items" />
                   </StackPanel>
                   <Button Grid.Column="2" Command="{Binding OnClickCommand,ElementName=theWindow}" CommandParameter="{Binding .}">
-                    <TextBlock Text="..." />
+                    <DrawingPresenter Width="8" Height="8" Drawing="{DynamicResource MaterialDesign.Edit}" />
                   </Button>
                 </Grid>
               </DataTemplate>
