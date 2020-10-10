@@ -18,8 +18,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="IPOCS" Version="1.1.0" />
-    <PackageReference Include="ipocs.objects" Version="1.0.2" />
+    <PackageReference Include="IPOCS" Version="1.1.1" />
+    <PackageReference Include="ipocs.objects" Version="1.0.3" />
     <PackageReference Include="NSubsys" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
